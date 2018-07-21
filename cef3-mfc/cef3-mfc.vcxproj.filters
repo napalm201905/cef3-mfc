@@ -33,13 +33,13 @@
     <ClInclude Include="Resource.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="MyINI.h">
+    <ClInclude Include="simple_v8handler.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="simple_handler.h">
+    <ClInclude Include="simple_render.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="simple_app.h">
+    <ClInclude Include="simple_client.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -53,16 +53,13 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="simple_app.cc">
+    <ClCompile Include="simple_v8handler.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="simple_handler.cc">
+    <ClCompile Include="simple_render.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="simple_handler_win.cc">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="MyINI.cpp">
+    <ClCompile Include="simple_client.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

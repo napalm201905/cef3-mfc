@@ -191,20 +191,19 @@
   <ItemGroup>
     <ClInclude Include="cef3-mfc.h" />
     <ClInclude Include="cef3-mfcDlg.h" />
-    <ClInclude Include="MyINI.h" />
     <ClInclude Include="Resource.h" />
-    <ClInclude Include="simple_app.h" />
-    <ClInclude Include="simple_handler.h" />
+    <ClInclude Include="simple_client.h" />
+    <ClInclude Include="simple_render.h" />
+    <ClInclude Include="simple_v8handler.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cef3-mfc.cpp" />
     <ClCompile Include="cef3-mfcDlg.cpp" />
-    <ClCompile Include="MyINI.cpp" />
-    <ClCompile Include="simple_app.cc" />
-    <ClCompile Include="simple_handler.cc" />
-    <ClCompile Include="simple_handler_win.cc" />
+    <ClCompile Include="simple_client.cpp" />
+    <ClCompile Include="simple_render.cpp" />
+    <ClCompile Include="simple_v8handler.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -224,4 +223,9 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties RESOURCE_FILE="cef3-mfc.rc" />
+    </VisualStudio>
+  </ProjectExtensions>
 </Project>

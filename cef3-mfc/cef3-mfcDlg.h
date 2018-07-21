@@ -1,7 +1,7 @@
 
 // cef3-mfcDlg.h : 头文件
 //
-
+#include "simple_client.h"
 #pragma once
 
 
@@ -20,6 +20,8 @@ public:
 	protected:
 	virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV 支持
 
+	CefRefPtr<SimpleClient>  m_simpleClient;
+	BOOL PreTranslateMessage(MSG* pMsg);
 
 // 实现
 protected:
@@ -32,4 +34,8 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	afx_msg void OnClose();
+	afx_msg void OnSize(UINT nType, int cx, int cy);
+	afx_msg void OnBnClickedBtnGo();
+	afx_msg void OnBnClickedBtnGoford();
+	afx_msg void OnBnClickedBtnGoback();
 };

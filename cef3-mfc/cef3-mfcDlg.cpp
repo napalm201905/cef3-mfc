@@ -6,13 +6,9 @@
 #include "cef3-mfc.h"
 #include "cef3-mfcDlg.h"
 #include "afxdialogex.h"
-#include "simple_handler.h"
 
-#include "include/cef_browser.h"
-#include "include/cef_command_line.h"
-#include "include/wrapper/cef_helpers.h"
-#include "simple_app.h"
-#include "MyINI.h"
+#include "include/cef_app.h"
+#include "simple_render.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -38,6 +34,10 @@ BEGIN_MESSAGE_MAP(Ccef3mfcDlg, CDialogEx)
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
 	ON_WM_CLOSE()
+	ON_WM_SIZE()
+	ON_BN_CLICKED(IDC_BTN_GO, &Ccef3mfcDlg::OnBnClickedBtnGo)
+	ON_BN_CLICKED(IDC_BTN_GOFORD, &Ccef3mfcDlg::OnBnClickedBtnGoford)
+	ON_BN_CLICKED(IDC_BTN_GOBACK, &Ccef3mfcDlg::OnBnClickedBtnGoback)
 END_MESSAGE_MAP()
 
 
@@ -55,49 +55,36 @@ BOOL Ccef3mfcDlg::OnInitDialog()
 	ShowWindow(SW_MAXIMIZE);
 
 	// TODO: 在此添加额外的初始化代码
-	CefWindowInfo window_info;
 
-	CRect rt;
+	CefRefPtr<SimpleClient> client(new SimpleClient());
+	m_simpleClient = client;
 
-	GetWindowRect(&rt);
+	CefRefPtr<SimpleRender> app(new SimpleRender());
 
-	window_info.SetAsChild(this->GetSafeHwnd(), rt);
+	CefSettings settings;
+	CefSettingsTraits::init(&settings);
+	settings.multi_threaded_message_loop = true;
+	settings.remote_debugging_port = 8088; // 如果不定义，则不能运行调试工具
+	settings.single_process = true;
 
-	CefRefPtr<SimpleHandler> handler(new SimpleHandler(true));
+	CefMainArgs mainArgs;
+	CefRefPtr<CefApp> cefApp;
 
-	// 特殊的CEF browser 在此设置
-	CefBrowserSettings browser_settings;
-	char * code = "UTF-8";
-	cef_string_t encode = {};
-	cef_string_utf8_to_utf16(code, strlen(code), &encode);
-	browser_settings.default_encoding = encode;
+	CefInitialize(mainArgs, settings, cefApp, NULL);
 
-	// 设置窗口标题
-	WCHAR window_name[1024];
-	//GetPrivateProfileStringW(L"core", L"title", L"", window_name, 1024, L".\\config.ini");
-	//cef_string_wide_to_utf16(window_name, wcslen(window_name), &window_info.window_name);
+	RECT rect;
+	GetClientRect(&rect);
+	RECT rectnew = rect;
+	rectnew.top = rect.top + 50;
+	rectnew.bottom = rect.bottom;
+	rectnew.left = rect.left;
+	rectnew.right = rect.right;
 
-	// 设置访问地址
-	//char url[1024];
-	//GetPrivateProfileStringA("core", "urlRoot", "", url, 1024, ".\\config.ini");
-
-
-	std::string url;
-	url = "file:///www/index.html";
-
-	// 查找是否存在ini文件，若不存在，则生成一个新的默认的ini文件
-	/*CFileFind finder;
-	BOOL ifFind = finder.FindFile(_T("config.ini"));
-	if (!ifFind)
-	{
-		WritePrivateProfileStringW(_T("core"), _T("urlRoot"), _T("www.baidu.com"), _T("config.ini"));
-	}
-	CString str;
-	USES_CONVERSION;
-	GetPrivateProfileString(_T("core"), _T("urlRoot"), CString("NULL"), str.GetBuffer(MAX_PATH), MAX_PATH, _T("config.ini"));
-	std::string url(W2A(str));*/
-
-	CefBrowserHost::CreateBrowser(window_info, handler.get(), url, browser_settings, NULL);
+	CefWindowInfo winInfo;
+	winInfo.SetAsChild(GetSafeHwnd(), rectnew);
+	
+	CefBrowserSettings browserSettings;
+	CefBrowserHost::CreateBrowser(winInfo, client, _T("http://www.baidu.com"), browserSettings, NULL);
 
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
@@ -145,4 +132,76 @@ void Ccef3mfcDlg::OnClose()
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
 	CefShutdown();
 	CDialogEx::OnClose();
+}
+
+void Ccef3mfcDlg::OnSize(UINT nType, int cx, int cy)
+{
+	CDialogEx::OnSize(nType, cx, cy);
+
+	// TODO:  在此处添加消息处理程序代码
+	RECT rect;
+	GetClientRect(&rect);
+
+	if (m_simpleClient.get())
+	{
+		CefRefPtr<CefBrowser> browser = m_simpleClient->GetBrowser();
+		if (browser)
+		{
+			CefWindowHandle hwnd = browser->GetHost()->GetWindowHandle();
+			::MoveWindow(hwnd, 0, 50, rect.right - rect.left, rect.bottom - 50, true);
+		}
+	}
+}
+
+/*
+Go按钮
+*/
+void Ccef3mfcDlg::OnBnClickedBtnGo()
+{
+	// TODO:  在此添加控件通知处理程序代码
+	CString strUrl;
+	GetDlgItem(IDC_EDIT_URL)->GetWindowText(strUrl);
+	if (strUrl.Trim().IsEmpty())
+	{
+		AfxMessageBox(_T("请输入网址"));
+		return;
+	}
+	const CefString cefStrUrl(strUrl);
+	m_simpleClient->GetBrowser()->GetMainFrame()->LoadURL(cefStrUrl);
+}
+
+/*
+前进按钮
+*/
+void Ccef3mfcDlg::OnBnClickedBtnGoford()
+{
+	// TODO:  在此添加控件通知处理程序代码
+	m_simpleClient->GetBrowser()->GoForward();
+}
+
+/*
+后退按钮
+*/
+void Ccef3mfcDlg::OnBnClickedBtnGoback()
+{
+	// TODO:  在此添加控件通知处理程序代码
+	m_simpleClient->GetBrowser()->GoBack();
+}
+
+/*
+响应回车键
+*/
+BOOL Ccef3mfcDlg::PreTranslateMessage(MSG* pMsg)
+{
+	// TODO: 在此添加专用代码和/或调用基类
+	if (pMsg->message == WM_KEYDOWN)
+	{
+		switch (pMsg->wParam)
+		{
+		case VK_RETURN:    // 屏蔽回车
+			OnBnClickedBtnGo();
+			return TRUE;
+		}
+	}
+	return CDialog::PreTranslateMessage(pMsg);
 }

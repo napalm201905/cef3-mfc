@@ -5,8 +5,6 @@
 #include "stdafx.h"
 #include "cef3-mfc.h"
 #include "cef3-mfcDlg.h"
-#include "simple_app.h"
-#include "include/cef_sandbox_win.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -26,19 +24,6 @@ Ccef3mfcApp::Ccef3mfcApp()
 {
 	// TODO: 在此处添加构造代码，
 	// 将所有重要的初始化放置在 InitInstance 中
-	void* sandbox_info = NULL;
-
-	CefMainArgs main_args(AfxGetApp()->m_hInstance);
-
-	CefRefPtr<SimpleApp> app(new SimpleApp);
-
-	CefSettings settings;
-
-	settings.no_sandbox = true;
-
-	settings.multi_threaded_message_loop = true;
-
-	CefInitialize(main_args, settings, app.get(), sandbox_info);
 }
 
 
