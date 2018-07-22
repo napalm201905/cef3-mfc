@@ -65,7 +65,7 @@ BOOL Ccef3mfcDlg::OnInitDialog()
 	CefSettingsTraits::init(&settings);
 	settings.multi_threaded_message_loop = true;
 	settings.remote_debugging_port = 8088; // 如果不定义，则不能运行调试工具
-	settings.single_process = true;
+	//settings.single_process = true;
 
 	CefMainArgs mainArgs;
 
@@ -132,8 +132,8 @@ HCURSOR Ccef3mfcDlg::OnQueryDragIcon()
 void Ccef3mfcDlg::OnClose()
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
+	//CefQuitMessageLoop();
 	CefShutdown();
-	CefQuitMessageLoop();
 	CDialogEx::OnClose();
 }
 

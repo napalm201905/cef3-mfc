@@ -81,6 +81,10 @@ public:
 	void ShowDevelopTools(CefRefPtr<CefBrowser> browser, const CefPoint& inspect_element_at);
 	void CloseDevelopTools(CefRefPtr<CefBrowser> browser);
 
+	// close browser
+	bool SimpleClient::DoClose(CefRefPtr<CefBrowser> browser);
+	void SimpleClient::OnBeforeClose(CefRefPtr<CefBrowser> browser);
+
 private:
 	CefRefPtr<CefBrowser> m_cefBrowser;
 
