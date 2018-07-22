@@ -1,5 +1,3 @@
-#pragma once
-
 #include "include/cef_v8.h"
 #include "include/cef_app.h"
 

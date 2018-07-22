@@ -52,7 +52,7 @@ BOOL Ccef3mfcDlg::OnInitDialog()
 	SetIcon(m_hIcon, TRUE);			// 设置大图标
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 
-	ShowWindow(SW_MAXIMIZE);
+	//ShowWindow(SW_MAXIMIZE);
 
 	// TODO: 在此添加额外的初始化代码
 
@@ -68,7 +68,9 @@ BOOL Ccef3mfcDlg::OnInitDialog()
 	settings.single_process = true;
 
 	CefMainArgs mainArgs;
+
 	CefRefPtr<CefApp> cefApp;
+	cefApp = app;
 
 	CefInitialize(mainArgs, settings, cefApp, NULL);
 
@@ -84,7 +86,7 @@ BOOL Ccef3mfcDlg::OnInitDialog()
 	winInfo.SetAsChild(GetSafeHwnd(), rectnew);
 	
 	CefBrowserSettings browserSettings;
-	CefBrowserHost::CreateBrowser(winInfo, client, _T("http://www.baidu.com"), browserSettings, NULL);
+	CefBrowserHost::CreateBrowser(winInfo, client, _T("file:///www/index.html"), browserSettings, NULL);
 
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
@@ -131,6 +133,7 @@ void Ccef3mfcDlg::OnClose()
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
 	CefShutdown();
+	CefQuitMessageLoop();
 	CDialogEx::OnClose();
 }
 
