@@ -1,9 +1,11 @@
 #pragma once
 #include "include/cef_client.h"
+#include <list>
 class SimpleClient : public CefClient, 
 					 public CefLifeSpanHandler, 
 					 public CefDownloadHandler, 
 				     public CefKeyboardHandler, 
+					 public CefLoadHandler,
 					 public CefContextMenuHandler
 {
 public:
@@ -17,6 +19,8 @@ public:
 
 	// CefLifeSpanHandler methods:
 	virtual void OnAfterCreated(CefRefPtr<CefBrowser> browser) OVERRIDE;
+	virtual bool DoClose(CefRefPtr<CefBrowser> browser) OVERRIDE;
+	virtual void OnBeforeClose(CefRefPtr<CefBrowser> browser) OVERRIDE;
 
 	CefRefPtr<CefBrowser> GetBrowser() { return m_cefBrowser; }
 	
@@ -36,6 +40,19 @@ public:
 		CefBrowserSettings& settings,
 		bool* no_javascript_access) override;
 
+	// CefLoadHandler methods:
+	virtual void OnLoadError(CefRefPtr<CefBrowser> browser,
+		CefRefPtr<CefFrame> frame,
+		ErrorCode errorCode,
+		const CefString& errorText,
+		const CefString& failedUrl) OVERRIDE;
+
+
+	// Request that all existing browser windows close.
+	void CloseAllBrowsers(bool force_close);
+
+	bool IsClosing() const { return is_closing_; }
+
 	// download
 	virtual CefRefPtr<CefDownloadHandler> GetDownloadHandler() { return this; }
 	virtual void OnBeforeDownload(
@@ -48,7 +65,7 @@ public:
 		CefRefPtr<CefDownloadItem> download_item,
 		CefRefPtr<CefDownloadItemCallback> callback) OVERRIDE;
 
-	//F5刷新功能
+	// F5刷新功能
 	virtual CefRefPtr<CefKeyboardHandler> GetKeyboardHandler() //实现  
 	{
 		return this;
@@ -61,7 +78,7 @@ public:
 		const CefKeyEvent& event,
 		CefEventHandle os_event) OVERRIDE;
 
-	//添加右键菜单
+	// 添加右键菜单
 	virtual CefRefPtr<CefContextMenuHandler> GetContextMenuHandler() //实现  
 	{
 		return this;
@@ -81,14 +98,14 @@ public:
 	void ShowDevelopTools(CefRefPtr<CefBrowser> browser, const CefPoint& inspect_element_at);
 	void CloseDevelopTools(CefRefPtr<CefBrowser> browser);
 
-	// close browser
-	bool SimpleClient::DoClose(CefRefPtr<CefBrowser> browser);
-	void SimpleClient::OnBeforeClose(CefRefPtr<CefBrowser> browser);
-
 private:
 	CefRefPtr<CefBrowser> m_cefBrowser;
 
 	HWND hWnd_; //接收消息的句柄
+	bool is_closing_;
+	// List of existing browser windows. Only accessed on the CEF UI thread.
+	typedef std::list<CefRefPtr<CefBrowser>> BrowserList;
+	BrowserList browser_list_;
 
 	IMPLEMENT_REFCOUNTING(SimpleClient);
 
