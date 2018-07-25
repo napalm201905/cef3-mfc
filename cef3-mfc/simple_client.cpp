@@ -201,6 +201,7 @@ void SimpleClient::CloseDevelopTools(CefRefPtr<CefBrowser> browser)
 //		m_cefBrowser = NULL;
 //	}
 //}
+// ¹Ø±Õä¯ÀÀÆ÷
 bool SimpleClient::DoClose(CefRefPtr<CefBrowser> browser) {
 	CEF_REQUIRE_UI_THREAD();
 

@@ -66,7 +66,7 @@ public:
 		CefRefPtr<CefDownloadItemCallback> callback) OVERRIDE;
 
 	// F5刷新功能
-	virtual CefRefPtr<CefKeyboardHandler> GetKeyboardHandler() //实现  
+	virtual CefRefPtr<CefKeyboardHandler> GetKeyboardHandler()
 	{
 		return this;
 	}
